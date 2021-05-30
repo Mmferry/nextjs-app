@@ -1,5 +1,4 @@
 import MeetupList from "../components/meetups/MeetupList";
-import Layout from "../components/layout/Layout";
 
 const DUMMY_MEETUPS = [
   {
@@ -7,30 +6,28 @@ const DUMMY_MEETUPS = [
     title: "A first meetup",
     image: "",
     address: "some address 5, 12345 some city",
-    description: "This the first meetup",
+    description: "This the first meetup"
   },
   {
     id: "m2",
     title: "A second meetup",
     image: "",
     address: "some address 10, 12345 some city",
-    description: "This the second meetup",
+    description: "This the second meetup"
   },
   {
     id: "m3",
     title: "A third meetup",
     image: "",
     address: "some address 15, 12345 some city",
-    description: "This the third meetup",
+    description: "This the third meetup"
   },
 ];
 
-function HomePage() {
-  return (
-    <Layout>
-      <MeetupList meetups={DUMMY_MEETUPS} />
-    </Layout>
-  );
+function HomePage () {
+  return(
+    <MeetupList meetups={DUMMY_MEETUPS} />
+  )
 }
 
 export default HomePage;
