@@ -1,55 +1,33 @@
-import { useEffect } from "react";
+import { MongoClient } from "mongodb";
 import MeetupList from "../components/meetups/MeetupList";
 
-const DUMMY_MEETUPS = [
-  {
-    id: "m1",
-    title: "A first meetup",
-    image: "",
-    address: "some address 5, 12345 some city",
-    description: "This the first meetup"
-  },
-  {
-    id: "m2",
-    title: "A second meetup",
-    image: "",
-    address: "some address 10, 12345 some city",
-    description: "This the second meetup"
-  },
-  {
-    id: "m3",
-    title: "A third meetup",
-    image: "",
-    address: "some address 15, 12345 some city",
-    description: "This the third meetup"
-  },
-];
-
-function HomePage (props) {
-
-  return(
-    <MeetupList meetups={props.meetups} />
-  )
+function HomePage(props) {
+  return <MeetupList meetups={props.meetups} />;
 }
 
 export async function getStaticProps() {
+  const clinet = await MongoClient.connect(
+    "mmongodb://admin:admin@cluster0-shard-00-00.itefi.mongodb.net:27017,cluster0-shard-00-01.itefi.mongodb.net:27017,cluster0-shard-00-02.itefi.mongodb.net:27017/meetups?ssl=true&replicaSet=atlas-9ft1h1-shard-0&authSource=admin&retryWrites=true&w=majority"
+  );
+  const db = clinet.db();
+
+  const meetupsCollection = db.collection("meetups");
+
+  const meetups = await meetupsCollection.find().toArray();
+
+  clinet.close();
+
   return {
     props: {
-      meetups: DUMMY_MEETUPS
+      meetups: meetups.map((meetup) => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        id: meetup._id.toString(),
+      })),
     },
-    revalidate: 10
-  }
+    revalidate: 10,
+  };
 }
-
-// export async function getServerSideProps(context) {
-//   const req = context.req;
-//   const res = context.res;
-
-//   return {
-//     props: {
-//       meetups: DUMMY_MEETUPS
-//     }
-//   }
-// }
 
 export default HomePage;
