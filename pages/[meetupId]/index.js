@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { MongoClient, ObjectId } from "mongodb";
 import MeetupDetail from "../../components/meetups/MeetupDetail";
@@ -5,12 +7,21 @@ import MeetupDetail from "../../components/meetups/MeetupDetail";
 function MeetupDetails(props) {
   useRouter;
   return (
-    <MeetupDetail
-      image={props.meetupData.image}
-      title={props.meetupData.title}
-      address={props.meetupData.address}
-      description={props.meetupData.description}
-    />
+    <Fragment>
+      <Head>
+        <title>{props.meetupData.title}</title>
+        <meta
+          name="description"
+          content={props.meetupData.description}
+        />
+      </Head>
+      <MeetupDetail
+        image={props.meetupData.image}
+        title={props.meetupData.title}
+        address={props.meetupData.address}
+        description={props.meetupData.description}
+      />
+    </Fragment>
   );
 }
 
@@ -46,10 +57,12 @@ export const getStaticProps = async (context) => {
 
   const meetupsCollection = db.collection("meetups");
 
-  const selectedMeetup = await meetupsCollection.findOne({ _id: ObjectId(meetupId) });
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: ObjectId(meetupId),
+  });
 
   clinet.close();
-  console.log(selectedMeetup);
+
   return {
     props: {
       meetupData: {
@@ -57,7 +70,7 @@ export const getStaticProps = async (context) => {
         title: selectedMeetup.title,
         image: selectedMeetup.image,
         address: selectedMeetup.address,
-        description: selectedMeetup.description
+        description: selectedMeetup.description,
       },
     },
   };
